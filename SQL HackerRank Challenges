@@ -51,7 +51,7 @@ Solution-
 SELECT * FROM CITY;
 
 ------------------------------------------------------------------
-QUESTION 3
+QUESTION 4
 
 Query all columns for a city in CITY with the ID 1661.
 
@@ -71,7 +71,7 @@ Solution-
 SELECT * FROM CITY WHERE ID = 1661; 
 
 -----------------------------------------------------------
-QUESTION 4
+QUESTION 5
 
 Query the details for all the Japanese cities in CITY. The COUNTRYCODE for Japan is JPN.
 
@@ -90,7 +90,7 @@ Solution
 SELECT * FROM CITY WHERE COUNTRYCODE = 'JPN';  
 
 ---------------------------------------------------------------------------
-QUESTION 5
+QUESTION 6
 
 Query the the names of all the Japanese cities in CITY. The COUNTRYCODE for Japan is JPN.
 
@@ -108,7 +108,7 @@ SELECT NAME FROM CITY WHERE COUNTRYCODE = 'JPN';
 
 ------------------------------------------------------
 
-QUESTION 6 
+QUESTION 7
 
 Query a list of CITY and STATE from STATION.
 
@@ -126,7 +126,7 @@ Solution-
 
 SELECT CITY,STATE FROM STATION; 
 -------------------------------------------------------------------
-QUESTION 7
+QUESTION 8
 
 Query a list of CITY names from STATION with even ID numbers only. You may print the results in any order, but must exclude duplicates from your answer.
 
@@ -151,7 +151,7 @@ For MSSQL
 SELECT DISTINCT CITY FROM STATION WHERE (ID % 2 ) = 0;
 ----------------------------------------------------------------------------------------------------
 
-question 8
+question 9
 
 Let NUM be the number of CITY entries in STATION, and NUMunique be the number of unique cities. Query the value of NUM−NUMunique from STATION.
 
@@ -174,7 +174,7 @@ SELECT COUNT(CITY) - COUNT(DISTINCT CITY) FROM STATION;
 
 ----------------------------------------------------------------------------------------------
 
-QUESTION 9
+QUESTION 10
 
 Query the two cities in STATION with the shortest and longest CITY names, as well as their respective lengths (i.e.: number of characters in the name). If there is more than one smallest or largest city, choose the one that comes first when ordered alphabetically.
 
@@ -201,7 +201,7 @@ SELECT TOP 1 CITY, LEN(CITY) as LENTGHS FROM station GROUP BY CITY ORDER BY LEN(
 
 -----------------------------------------------------------------------------------------------------------
 
-QUESTION 10
+QUESTION 11
 
 Query the list of CITY names starting with vowels (a, e, i, o, u) from STATION. Your result cannot contain duplicates.
 
@@ -224,7 +224,7 @@ OR CITY LIKE 'U%' ORDER BY CITY ASC;
 
 --------------------------------------------------------------------------------------------------------------
 
-QUESTION 11
+QUESTION 12
 
 Query the list of CITY names ending with vowels (a, e, i, o, u) from STATION. Your result cannot contain duplicates.
 
@@ -245,7 +245,7 @@ SELECT DISTINCT(CITY) FROM STATION WHERE CITY LIKE '%a' OR CITY LIKE '%e' OR CIT
 OR CITY LIKE '%u';  
 -----------------------------------------------------------------------------------------
 
-QUESTION 11
+QUESTION 13
 
 Query the list of CITY names from STATION which have vowels (i.e., a, e, i, o, and u) as both their first and last characters. Your result cannot contain duplicates.
 
@@ -280,7 +280,7 @@ WHERE (
    );
 ---------------------------------------------------------------------------------------------
 
-QUESTION 12
+QUESTION 14
 
 Query the list of CITY names from STATION that either do not start with vowels or do not end with vowels. Your result cannot contain duplicates.
 Input Format
@@ -315,7 +315,7 @@ SELECT DISTINCT CITY FROM STATION WHERE LOWER(SUBSTR(CITY,1,1)) NOT IN ('a','e',
 
 --------------------------------------------------------------------------------------------------------
 
-QUESTION 13
+QUESTION 15
 
 Query the list of CITY names from STATION that either do not start with vowels and do not end with vowels. Your result cannot contain duplicates.
 
@@ -339,7 +339,7 @@ SELECT DISTINCT CITY FROM STATION WHERE LOWER(SUBSTR(CITY,1,1)) NOT IN ('a','e',
  
 ------------------------------------------------------------------------------------------------
 
-QUESTION 13
+QUESTION 16
 
 Query the Name of any student in STUDENTS who scored higher than  75 Marks. Order your output by the last three characters of each name. 
 If two or more students both have names ending in the same last three characters (i.e.: Bobby, Robby, etc.), secondary sort them by ascending ID.
