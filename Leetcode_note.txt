@@ -1,0 +1,513 @@
+
+----------------------------------------
+
+https://leetcode.com/problems/big-countries
+https://leetcode.com/problems/swap-salary/
+https://leetcode.com/problems/not-boring-movies/
+https://leetcode.com/problems/duplicate-emails/
+https://leetcode.com/problems/combine-two-tables/
+https://leetcode.com/problems/employees-earning-more-than-their-managers/
+https://leetcode.com/problems/customers-who-never-order/
+https://leetcode.com/problems/delete-duplicate-emails
+https://leetcode.com/problems/rising-temperature
+https://leetcode.com/problems/classes-more-than-5-students
+https://leetcode.com/problems/second-highest-salary/
+
+-------------
+
+
+ 			LEETCODE
+
+
+
+----------------------------question--------------------------------
+  Write a solution to find all dates' Id with higher temperatures compared to its previous dates (yesterday).
+
+select t.id from weather as t, weather as y where datediff(t.recordDate, y.recordDate ) = 1 and  t.temperature > y.temperature
+-----------------------------------------------
+select name from Customer where referee_id  <> 2 OR referee_id IS null
+------------
+select name,population,area from World  where area  >= 3000000 or population >= 25000000
+---------------
+select distinct(author_id) as id from Views where author_id  = viewer_id 
+order by author_id  asc
+-----------------------
+select product_id from Products where low_fats = "Y" and recyclable = "Y"
+----------------------------
+select tweet_id from Tweets where length(content) > 15
+
+
+
+---------------------------question-----------------------------------
+   Write a solution to show the unique ID of each user, If a user does not have a unique ID replace just show null.
+
+ different way to solve this:
+select u.unique_id, e.name from Employees e left join EmployeeUNI u on e.id = u.id 
+
+select  unique_id,name from Employees left join EmployeeUNI using(id)
+
+select unique_id ,name
+from employees as emp
+left join employeeUNI as uni
+on uni.id = emp.id
+
+SELECT IFNULL(EmployeeUNI.unique_id, NULL) AS unique_id, Employees.name
+FROM Employees LEFT JOIN EmployeeUNI
+ON Employees.id=EmployeeUNI.id
+
+
+SELECT IFNULL(EmployeeUNI.unique_id, NULL) AS unique_id, Employees.name
+FROM Employees LEFT JOIN EmployeeUNI
+ON Employees.id=EmployeeUNI.id
+GROUP BY Employees.name
+ORDER BY Employees.name DESC, EmployeeUNI.unique_id
+
+
+
+------------------------------------------------------------
+	Write a solution to report the product_name, year, and price for each sale_id in the Sales table.
+
+select product_name, year, price from Sales join Product using(product_id)
+
+
+
+-----------------------question----------------------------------------
+  Write a solution to find the IDs of the users who visited without making any transactions and the number of times they made these types of visits.
+---------
+select customer_id, count(visit_id)  as count_no_trans from Visits left join Transactions using (visit_id) where amount is null group by customer_id
+
+select customer_id, count(*)  as count_no_trans from Visits where visit_id not in (select visit_id from Transactions) group by customer_id
+
+select v.customer_id, count(v.visit_id)  as count_no_trans from Visits v left join Transactions t using (visit_id) where t.visit_id is null group by v.customer_id
+
+
+
+----------------------------------question-----------------------------
+The resulting table should have the machine_id along with the average time as processing_time, which should be rounded to 3 decimal places.
+
+-----
+select machine_id, round(sum(if(activity_type = 'start', -1, 1) *timestamp)/count(distinct process_id),3)  as processing_time from Activity group by 
+machine_id
+
+--
+select a1.machine_id, round(avg(a2.timestamp - a1.timestamp), 3)  as processing_time from Activity a1, Activity a2
+where a1.machine_id = a2.machine_id and a1.process_id = a2.process_id and a1.activity_type = 'start' and a2.activity_type = 'end' 
+group by a1.machine_id
+------------------------------------------------------------
+
+select a.id from Weather a, Weather b  where datediff(a.recordDate , b.recordDate) = 1 and  a.temperature > b.temperature 
+----------------------------------------------------
+ return unquie id
+select c.unique_id, e.name from Employees e left join EmployeeUNI c using(id)
+
+-----------------question--------------------------
+Write name and bonus amount of each employee with a bonus less than 1000.
+--------
+select e.name as name, b.bonus as bonus from Employee e  left join Bonus b using (empId) where b.bonus is  null or b.bonus < 1000
+
+
+
+---------------------question-----------------------
+   Write a solution to find the number of times each student attended each exam.
+	Return the result table ordered by student_id and subject_name.
+
+select s.student_id , s.student_name, su.subject_name , count(e.student_id) as attended_exams from Students s cross join Subjects su left join Examinations e on s.student_id = e.student_id and e.subject_name = su.subject_name group by s.student_id,s.student_name,su.subject_name
+order by s.student_id, s.student_name
+
+
+
+
+--------------------------question-----------------------------
+	Write a solution to find managers with at least five direct reports.
+
+select distinct b.name from Employee a join Employee b on a. managerId = b.id where a.managerId > 5 
+  		2nd method
+select name from Employee where id in (select managerId from Employee group by name having managerId >= 5)
+
+
+-------------------------------------------------
+	confirmation message was either confirmed ('confirmed') or expired without confirming ('timeout').
+
+select s.user_id , cast(sum(case when c.action = "confirmed" then 1 else 0 end)/count(*) as Decimal(5,2)) as confirmation_rate from Signups s left join Confirmations c using(user_id)
+group by s.user_id 
+
+ 2nd method
+
+select s.user_id , round(ifnull(avg(c.action = "confirmed"),0),2) as confirmation_rate from Signups s left join Confirmations c using(user_id )
+group by s.user_id 
+
+	3rd method
+
+select s.user_id , round(sum(case when c.action = "confirmed" then 1 else 0 end)/count(*),2) as confirmation_rate from Signups s left join Confirmations c using(user_id)
+group by s.user_id 
+
+
+
+
+
+-----------------------------------question----------------------
+	Write a solution to report the movies with an odd-numbered ID and a description that is not "boring".
+
+select * from Cinema where id%2 != 0 and not description  = "boring" 
+order by rating desc
+	2nd method
+select * from cinema where id%2!=0 and description not like '%boring%' order by rating desc
+
+
+
+--------------------------question--------------------
+	Write a solution to find the average selling price for each product. average_price should be rounded to 2 decimal places.
+select p.product_id, round(sum(p.price * u.units)/ sum(u.units),2) as average_price  from Prices p  join UnitsSold u using(product_id) where u.purchase_date between start_date and end_date group by p.product_id
+Note--
+	u.purchase_date >= p.start_date and u.purchase_date 	<= p.end_date
+
+	OR
+
+	purchase_date BETWEEN start_date AND end_date
+
+
+
+
+-----------------------------question--------------------------------
+	Write an SQL query that reports the average experience years of all the employees for each project, rounded to 2 digits.
+
+          first method
+SELECT P.PROJECT_ID, ROUND((CAST(SUM(E.EXPERIENCE_YEARS) AS FLOAT)/ COUNT(P.EMPLOYEE_ID)), 2) AS AVERAGE_YEARS
+FROM PROJECT P
+LEFT JOIN EMPLOYEE E
+ON E.EMPLOYEE_ID = P.EMPLOYEE_ID
+GROUP BY P.PROJECT_ID
+ORDER BY P.PROJECT_ID;
+
+	second method
+select p.project_id, round(avg(e.experience_years),2) as average_years from Project p  join Employee e where p.employee_id = e.employee_id  group by p.project_id  
+
+
+
+-------------------------------question-------------------------------
+Write a solution to find the percentage of the users registered in each contest rounded to two decimals.
+
+select r.contest_id ,round(count(Distinct r.user_id )/ (select count(Distinct user_id) from Users)* 100 ,2) as percentage from Users u left join Register r on u.user_id  = r.user_id group by r.contest_id order by percentage desc , contest_id as
+
+		2nd way
+
+with total_user as ( 
+    select count(*) as cnt from Users)
+
+select contest_id, round(count(user_id) * 100 /t.cnt,2) as percentage
+    from Register r, total_user t
+    group by contest_id order by percentage  desc, contest_id
+
+
+
+---------------------------------question----------------------------
+Write a solution to find each query_name, the quality and poor_query_percentage.
+Both quality and poor_query_percentage should be rounded to 2 decimal places.
+
+Return the result table in any order.
+select query_name , round(Avg(rating/ position),2) as quality , round(sum(rating < 3) /count(*) *100, 2) as poor_query_percentage  from Queries group by query_name 
+
+We define query quality as:
+
+The average of the ratio between query rating and its position.
+
+We also define poor query percentage as:
+
+The percentage of all queries with rating less than 3.
+
+		2ND WAY
+
+with  sub_que as (
+    select query_name, avg(cast(rating as decimal)/ position ) as quality,avg(case when rating < 3  then 1 else 0 end)* 100 as poor_query_percentage  from Queries group by query_name
+)
+ select query_name, round(quality,2) as quality, round(poor_query_percentage,2) as poor_query_percentage from sub_que 
+
+		3RD WAY
+SELECT L.Query_name as query_name, ROUND(L.Quality,2) AS quality, COALESCE(ROUND(R.poor_query_percentage,2),0) AS poor_query_percentage FROM (select Query_name,(SUM((CAST(Rating AS FLOAT) / CAST(position AS FLOAT))))/ COUNT(*) as quality from Queries GROUP BY Query_name) AS L LEFT JOIN (SELECT L.Query_Name, (CAST(l.POOR_QUERY AS FLOAT) / CAST(R.Num_Query AS FLOAT) * 100) AS poor_query_percentage FROM (select Query_name, COUNT(*) AS POOR_QUERY FROM Queries WHERE rating < 3 GROUP BY Query_name) AS L LEFT JOIN (select query_name,count(*) as Num_Query from Queries GROUP BY query_name) AS R ON L.Query_name = R.Query_name) AS R ON L.Query_name = R.Query_name
+
+
+
+
+-----------------------------question----------------------------------
+Write a solution to find the second highest salary from the Employee table. If there is no second highest salary, return null (return None in Pandas).
+
+
+SELECT MAX(Salary) AS SecondHighestSalary
+FROM Employee
+WHERE Salary < (Select MAX(Salary) FROM Employee);
+
+		---2nd way----------
+# Write your MySQL query statement below
+with cte as (select *,dense_rank() over(order by salary desc) as rnk from Employee )
+select
+case when (select count(1) from cte) > 1 then
+(select distinct salary as secondHighestSalary from cte where rnk=2)
+else
+NULL end as secondHighestSalary;
+	------3rd way--------------
+with maxs as (
+    select max(salary) as SecondHighestSalary , dense_ rank() over(order by salary desc)_rank from Employee where a rank = 2
+)
+select SecondHighestSalary from maxs union 
+select Null where not exists(select * from maxs)
+------------------------------------------------------------
+with cte as (select *,dense_rank() over(order by salary desc) as rnk from Employee )
+select
+case when (select count(*) from cte) > 1 then
+(select distinct salary as secondHighestSalary from cte where rnk=2)
+else
+NULL end as secondHighestSalary;
+--------------------------------------------------
+
+with total_user as ( 
+    select count(*) as cnt from Users)
+
+select contest_id, round(count(user_id) * 100 /t.cnt,2) as percentage
+    from Register r, total_user t
+    group by contest_id order by percentage  desc, contest_id
+
+-------------------------question-----------------------------------------
+ Write a solution to find the second highest distinct salary from the Employee table. If there is no second highest salary, return null (return None in Pandas).
+
+WITH CTE AS( 
+   SELECT *, DENSE_RANK() OVER(ORDER BY SALARY DESC) AS rnk FROM EMPLOYEE
+
+)
+SELECT  CASE WHEN (SELECT COUNT(1) FROM CTE ) > 1 THEN 
+(SELECT DISTINCT SALARY AS secondHighestSalary  FROM CTE WHERE rnk = 2 )
+else NULL end as secondHighestSalary 
+
+-------------------------------------------------
+
+WITH CTE AS( 
+   SELECT *, DENSE_RANK() OVER(ORDER BY SALARY DESC) AS rnk FROM EMPLOYEE
+
+)
+SELECT  CASE WHEN (SELECT count(*) FROM CTE ) > 1 THEN 
+(SELECT DISTINCT SALARY AS secondHighestSalary  FROM CTE WHERE rnk = 2 )
+else NULL end as secondHighestSalary 
+
+------------------------question-------------------------
+Write a solution to find the nth highest salary from the Employee table. If there is no nth highest salary, return null.
+
+The result format is in the following example.
+
+
+
+
+
+CREATE FUNCTION getNthHighestSalary(@N INT) RETURNS INT AS
+BEGIN
+  RETURN( 
+    DECLARE @result INT;
+    
+    WITH RankedSalaries AS (
+        SELECT salary, 
+               RANK() OVER (ORDER BY salary DESC) AS RankSalary
+        FROM Employee
+        GROUP BY salary
+    )
+    SELECT @result = max(salary)
+    FROM RankedSalaries
+    WHERE RankSalary = @N;
+    
+    RETURN @result;
+END;
+
+----------------------------------------------
+
+
+CREATE FUNCTION getNthHighestSalary(@N INT) RETURNS INT AS
+BEGIN
+
+   DECLARE @result INT;
+
+  SELECT @result = Salary
+  FROM (
+    SELECT Salary, DENSE_RANK() OVER (ORDER BY Salary DESC) AS ranking
+    FROM Employee
+  ) AS ranked_salaries
+  WHERE ranking = @N;
+
+  RETURN @result;
+END;
+-----------------------------------------------
+
+ WITH RankedSalaries AS (
+    SELECT salary, DENSE_RANK() OVER (ORDER BY salary DESC) AS rank
+    FROM Employee
+)
+SELECT salary AS nth_highest_salary
+FROM RankedSalaries
+WHERE rank = n;
+------------------------------------------------
+
+CREATE FUNCTION getNthHighestSalary(@N INT) RETURNS INT AS
+BEGIN
+
+   DECLARE @RESULT INT;
+
+  WITH CTE AS (
+    SELECT Salary, DENSE_RANK() OVER (ORDER BY Salary DESC) AS ranking
+    FROM Employee
+  ) 
+  SELECT @RESULT = MAX(SALARY)  FROM CTE WHERE ranking = @N
+  RETURN @RESULT
+END;
+-----------------------------question---------------------------
+Write a solution to find the rank of the scores. The ranking should be calculated according to the following rules:
+
+The scores should be ranked from the highest to the lowest.
+If there is a tie between two scores, both should have the same ranking.
+After a tie, the next ranking number should be the next consecutive integer value. In other words, there should be no holes between ranks.
+Return the result table ordered by score in descending order.
+
+The result format is in the following example.
+
+
+
+SELECT score, DENSE_RANK() OVER(ORDER BY score desc) AS rank FROM
+Scores 
+-----------------------------------
+
+SELECT name from Employee where id = ( select managerid from 
+employee group by managerId having count(*) >= 5)
+
+
+------------
+SELECT e.name from employee e join employee m 
+on e.id = m.managerId group by e.name ,m.managerId having count(*) >= 5
+-----------------
+
+select e.name from employee as e join(
+    select managerId , count(managerId) as counts from employee
+    group by managerId having count(managerId) >= 5
+) as m on e.id = m.managerId
+
+
+---------------------question---------------------------
+
+Find all numbers that appear at least three times consecutively.
+
+Return the result table in any order.
+
+The result format is in the following example.
+
+
+
+SOLUTION
+
+With cte_num AS (Select Num AS V1, LEAD(num,1) Over (order by id) AS V2, LEAD(num,2) Over (order by id) AS V3 From Logs)
+Select V1 AS ConsecutiveNums from cte_num
+where V1=V2
+And V2=V3
+-------------------
+
+with cte as
+(
+select id,num,lead(num) over(order by id) as nxt,lag(num) over(order by id) as prev
+from Logs
+)
+
+select distinct num as ConsecutiveNums from cte where num = nxt and num = prev
+
+12
+
+-------------------------------question------------------------------------
+Write a solution to report all the duplicate emails. Note that it's guaranteed that the email field is not NULL.
+
+with cte as (select email, count(email) as counts from Person group by email having count(email) > 1 )
+ select email from cte  
+
+-------------question-------------------------------------
+Write a solution to find the employees who earn more than their managers.
+
+Return the result table in any order.
+
+SELECT name as Employee FROM Employee e  WHERE Salary > 
+(SELECT SALARY FROM Employee WHERE ID = e.managerId)  
+
+----------question--------------------------------------
+Write a solution to find all customers who never order anything.
+
+SELECT name as Customers from  Customers where id not in ( select customerid from Orders)
+
+
+
+---------question--------------------------------------------
+
+
+Write a solution to find employees who have the highest salary in each of the departments.
+
+
+SELECT c.Department,c.Employee, c.Salary 
+from  (select 
+ d.name as Department,e.name as Employee, salary as Salary 
+ , rank() over(partition by d.name
+order by salary desc ) as rank from  
+Employee e join Department d on e.departmentId = d.id ) as c where rank = 1
+
+-------------------------
+wrong answer
+
+
+SELECT  d.name as Department,e.name as Employee, salary as Salary 
+from  Employee e join Department d on e.departmentId = d.id 
+where (departmentId, salary) in 
+(select departmentId, max(salary) from Employee group by departmentId )
+
+-----------------------------
+good answer
+
+WITH CTE AS (SELECT MAX(salary) AS salarys, departmentId,  d.name as Department
+from  Employee e join Department d on e.departmentId = d.id
+group by departmentId, d.name)
+SELECT c.Department as Department,name as Employee, salary as Salary 
+from Employee e inner join CTE c on e.departmentId = c.departmentId
+and e.salary = c.salarys
+
+
+-------------------question----------------------------------
+A company's executives are interested in seeing who earns the most money in each of the company's departments. A high earner in a department is an employee who has a salary in the top three unique salaries for that department.
+
+Write a solution to find the employees who are high earners in each of the departments.
+
+Return the result table in any order.
+
+The result format is in the following example.
+
+-----
+
+wrong answer
+
+SELECT c.Department,c.Employee, c.Salary from
+(SELECT e.departmentId , d.name as Department,e.name as Employee, salary as Salary,
+rank() over(partition by e.departmentId
+order by   salary desc)  as rank
+from Employee e join Department d on e.departmentId = d.id) as c
+where rank <= 4
+
+
+right answer
+
+SELECT c.Department,c.Employee,  c.Salary from
+(SELECT e.departmentId , d.name as Department,e.name as Employee,  salary as Salary,
+dense_rank() over(partition by e.departmentId
+order by salary desc)  as rank
+from Employee e join Department d on e.departmentId = d.id) as c
+where rank < 4
+
+----------------
+
+select d.name as Department,
+e. name as Employee,
+e.salary
+from Employee as e join department as d
+on e.departmentId = d.id
+where 3 > (select count(distinct e1.salary) from Employee as e1
+where e1.departmentId = e.departmentId  and  e1.salary > e.salary )
+order by 1, 3 desc
+    
+-------------------------------------------------------
+
+
