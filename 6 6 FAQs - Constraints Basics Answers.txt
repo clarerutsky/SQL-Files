@@ -1,0 +1,89 @@
+1) 	WHAT IS THE DIFFERENCE BETWEEN UNIQUE AND PRIMARY KEY IN SQL SERVER?
+	Primary key : Does not allow null values, does not allow duplicates.
+	Primary key : Auto creates a clustered Index. Mandatory for Replication that involves Log Reader Agent. 
+
+	Unique Key: Allow upto 1 null values, does not allow duplicates.
+	Unique Key: Auto creates a non clustered Index.  
+
+
+2)	CAN WE DEFINE PRIMARY KEY ON CHARACTER COLUMNS IN SQL SERVER?
+	YES
+
+ 
+3)	CAN WE DEFINE MULTIPLE CONSTRAINTS ON A SINGLE COLUMN?
+	YES 
+
+4)  	YOU HAVE A TABLE WITH IDENTITY PROPERTY. YOU DELETED DATA FROM THE TABLE. 
+	THEN YOU INSERT NEW DATA. WHAT HAPPENS TO THE IDENTITY VALUE? WILL IT INCREMENT AS USUAL? OR RESET?
+	Identity value is auto incremented. 
+
+
+5)  	YOU HAVE A TABLE WITH IDENTITY PROPERTY. YOU TRUNCATE DATA FROM THE TABLE. 
+	THEN YOU INSERT NEW DATA. WHAT HAPPENS TO THE IDENTITY VALUE? WILL IT INCREMENT AS USUAL? OR RESET?
+	Identity value is Reset. 
+
+	
+6)	HOW DO YOU VERIFY THE KEYS IN A GIVEN TABLE (USING GUI FOR NOW) ?
+	SSMS > Object Explorer > Database > Table > Keys, Constraints	
+
+
+7)	YOU WERE GIVEN SOME TABLES WITH DATA. WHERE DO YOU CHECK THE RELATIONS BETWEEN THE TABLES IN GUI?
+	Using Database Diagrams
+
+
+8) 	CAN WE RELATE TABLES FROM DIFFERENT SCHEMAS? IF NO, WHY?  IF YES, THEN GIVEN AN EXAMPLE.	
+	Yes, we can. 
+
+9)	Create an Online Reservation Database with Flight, Reservation TABLES.
+	Define proper relation between the tables:
+
+	Table 1:		Flight			(FlightCode, SourceCity, DestinationCity)
+	Table 2:		Reservation		(FlightCode, Seats, Class)
+
+	
+-- 1ST TABLE:
+CREATE TABLE FLIGHT
+(	
+	CRAFTCODE VARCHAR(30),	 
+	SOURCE VARCHAR(30) NOT NULL,
+	DESTINATION VARCHAR(30)
+)
+
+INSERT INTO FLIGHT VALUES ('EMI101', 'HYB', 'NYC') 
+INSERT INTO FLIGHT VALUES ('EMI102', 'HYB', 'LSA')
+INSERT INTO FLIGHT VALUES ('EMI103', 'HYB', 'LSA')
+INSERT INTO FLIGHT VALUES ('EMI104', 'HYB', 'LSA')
+INSERT INTO FLIGHT VALUES ('EMI106', 'HYB', 'LSA')
+
+SELECT * FROM FLIGHT
+
+											   						 					  
+-- 2ND TABLE:
+CREATE TABLE Reservation
+(
+	CRAFT_CODE varchar(30),	
+	No_of_Seats int ,
+	Class_Code varchar(10) 
+)
+ 
+INSERT INTO Reservation VALUES ('EMI101', 1, 'ECO') 
+INSERT INTO Reservation VALUES ('EMI102', 4, 'BIZ') 
+INSERT INTO Reservation VALUES ('EMI103', 2, 'BIZ')
+INSERT INTO Reservation VALUES ('EMI103', 1, 'BIZ')
+INSERT INTO Reservation VALUES ('EMI103', 4, 'BIZ')
+INSERT INTO Reservation VALUES ('EMI104', 2, 'BIZ')		
+INSERT INTO Reservation VALUES ('EMI104', 5, 'BIZ')			 
+INSERT INTO Reservation VALUES ('EMI105', 5, 'BIZ')	
+INSERT INTO Reservation VALUES ('EMI105', 4, 'BIZ')	
+
+SELECT * FROM Reservation
+
+SELECT * FROM FLIGHT			-- 5 ROWS
+SELECT * FROM Reservation		-- 9 ROWS
+
+
+
+
+	
+
+
